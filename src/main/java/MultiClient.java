@@ -9,13 +9,14 @@ import java.util.concurrent.atomic.AtomicInteger;
  * @author Rebecca Zhang
  * Created on 2024-06-02
  */
-public class MultiThread {
+public class MultiClient {
 
-    private static final ExecutorService executor = Executors.newCachedThreadPool();
+    private static final ExecutorService executor = Executors.newFixedThreadPool(150);
     private static final BlockingQueue<SkierTask> queue = new LinkedBlockingQueue<>();
     private static final CountDownLatch startLatch = new CountDownLatch(1);
     private static final AtomicInteger successCount = new AtomicInteger(0);
     private static final AtomicInteger failCount = new AtomicInteger(0);
+
 
     private static final int POST_REQ_EACH_THREAD_FIRST = 1000;
     private static final int THREADS_NUM_FIRST = 32;
@@ -50,6 +51,7 @@ public class MultiThread {
 
         long end = System.currentTimeMillis();
         System.out.println("time(ms): " + (end - start) + " success req: " + successCount.get() + " fail req: " + failCount.get());
+
     }
 
 }

@@ -1,9 +1,10 @@
 package producerConsumer;
 
-import api.SkiersApi;
+import api.SkierApi;
 import model.LifeRide;
 import model.SkierTask;
 
+import java.io.IOException;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -19,7 +20,7 @@ public class SkierConsumer implements Runnable {
     private final AtomicInteger successCount;
     private final AtomicInteger failCount;
     private final int POST_REQ_EACH_THREAD;
-    private static final SkiersApi skiersApi = new SkiersApi();
+    private static final SkierApi skierApi = new SkierApi();
 
     public SkierConsumer(BlockingQueue<SkierTask> queue, CountDownLatch startLatch, AtomicInteger successCount, AtomicInteger failCount, int postReqNumEachThread) {
         this.queue = queue;
@@ -42,7 +43,7 @@ public class SkierConsumer implements Runnable {
                 Integer skierID = task.getSkierID();
                 LifeRide lifeRide = new LifeRide(task.getTime(), task.getLiftID());
 
-                int code = skiersApi.writeNewLiftRideCall(lifeRide, resortID, seasonID, dayID, skierID);
+                int code = skierApi.writeNewLiftRideCall(lifeRide, resortID, seasonID, dayID, skierID);
                 if (code == 201) {
                     successCount.incrementAndGet();
                 } else {
@@ -55,6 +56,13 @@ public class SkierConsumer implements Runnable {
         } catch (InterruptedException e) {
             // throw new RuntimeException(e);
             System.out.println("InterruptedException");
+        } finally {
+            try {
+                // remove thread local
+                skierApi.close();
+            } catch (IOException e) {
+                System.out.println("IOException : error closing ThreadLocal");
+            }
         }
     }
 

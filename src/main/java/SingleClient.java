@@ -1,4 +1,4 @@
-import api.SkiersApi;
+import api.SkierApi;
 import model.LifeRide;
 
 import java.util.concurrent.atomic.AtomicInteger;
@@ -27,7 +27,7 @@ public class SingleClient {
         Integer skierID = 19; // Integer | ID of the skier riding the lift
         LifeRide lifeRide = new LifeRide(111, 222);
 
-        SkiersApi skiersApi = new SkiersApi();
+        SkierApi skiersApi = new SkierApi();
         Thread thread = new Thread(() -> {
             for (int i = 0; i < 10000; i++) {
                 int code = skiersApi.writeNewLiftRideCall(lifeRide, resortID, seasonID, dayID, skierID);

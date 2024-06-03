@@ -1,4 +1,4 @@
-import api.SkiersApi;
+import api.SkierApi;
 import model.LifeRide;
 
 import java.util.concurrent.CountDownLatch;
@@ -17,20 +17,23 @@ import java.util.concurrent.atomic.AtomicInteger;
 // todo
 //  done 1) producer-consumer模式：单个producer线程（永远不必等待事件可用，消耗尽可能少的CPU和内存）随机生成post请求参数和内容，多个consumer线程发起请求
 //  done 2) 32个线程 * 每个线程1000个请求 -> 创建多少个线程 * 每个线程多少个请求 performance最好（只需要保证一共发送200K个请求）-> test case
-//       2.1）新的问题：httpClient 相关，关于连接的关闭策略，如何确保每个线程发送X个post请求后关闭连接；如果同一个线程被复用，连接可以不关闭？
+//  done 2.1）新的问题：httpClient 相关，关于连接的关闭策略，如何确保每个线程发送X个post请求后关闭连接；如果同一个线程被复用，连接可以不关闭？
+//            -> response的关闭 和 httpClient的关闭 和 threadLocal的关闭
 //  done 3) IOException处理，并在最外层统计成功的请求数和不成功的请求数，原子类count来解决并发问题
 //  4) expect throughput (little's rule) & real throughput
+//  5) newFixedThreadPool 和 newCachedThreadPool 哪个更好？newFixedThreadPool 的个数设为多少更好？有没有更好的threadPool，貌似不建议用这俩
+
+// todo: 服务端线程使用情况和客户端线程数/httpClient数的关系
 
 public class MultiClientOne {
 
-    // todo: newFixedThreadPool 和 newCachedThreadPool 哪个更好？newFixedThreadPool 的个数设为多少更好？
     private static final ExecutorService executor = Executors.newFixedThreadPool(250);
-    private static final SkiersApi skiersApi = new SkiersApi();
+    private static final SkierApi skiersApi = new SkierApi();
     private static final AtomicInteger successCount = new AtomicInteger(0);
     private static final AtomicInteger failCount = new AtomicInteger(0);
     private static final CountDownLatch startLatch = new CountDownLatch(1);
 
-    // todo: InterruptedException 如何处理
+    // todo: InterruptedException 如何处理，总结所有出现的异常的类型，以及是否都处理了？
     public static void main(String[] args) throws InterruptedException {
 
         long start = System.currentTimeMillis();
