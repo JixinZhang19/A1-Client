@@ -15,6 +15,8 @@ import java.util.concurrent.atomic.AtomicInteger;
  */
 public class SkierConsumer implements Runnable {
 
+
+
     private final BlockingQueue<SkierTask> queue;
     private final CountDownLatch startLatch;
     private final AtomicInteger successCount;
@@ -42,8 +44,12 @@ public class SkierConsumer implements Runnable {
                 String dayID = task.getDayID();
                 Integer skierID = task.getSkierID();
                 LifeRide lifeRide = new LifeRide(task.getTime(), task.getLiftID());
-
+                // long start = System.currentTimeMillis();
                 int code = skierApi.writeNewLiftRideCall(lifeRide, resortID, seasonID, dayID, skierID);
+                // long end = System.currentTimeMillis();
+                // todo: 将 start, 请求类型(POST), latency(start - end), code 写入CSV中
+                //  -> method 1:  将当前线程所有请求写入一个StringBuilder，在当前线程任务全部结束后，再将StringBuilder中的记录用另外的线程池中的线程写入CSV文件中
+                //  -> method 2: 作为生产者写入一个queue(ConcurrentLinkedQueue)，然后消费者从队列中慢慢取就行，不计入post的时间
                 if (code == 201) {
                     successCount.incrementAndGet();
                 } else {

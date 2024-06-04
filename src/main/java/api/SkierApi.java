@@ -11,8 +11,6 @@ import java.io.IOException;
  */
 public class SkierApi implements Closeable {
 
-    // 在每个线程执行结束后，ThreadLocal 中的 ApiClient 对象会被垃圾回收器进行回收处理
-    // 在使用线程池管理的多个线程中，每个线程的 ThreadLocal 变量副本在执行完任务后不会立即销毁，因为线程池会重用线程
     // private static final ThreadLocal<ApiClient> apiClients = ThreadLocal.withInitial(ApiClient::new);
     private static final SkierThreadLocal<ApiClient> apiClients = new SkierThreadLocal<>();
 
@@ -20,7 +18,8 @@ public class SkierApi implements Closeable {
 
         ApiClient apiClient = apiClients.get();
 
-        String baseUrl = "http://localhost:8080";
+        String baseUrl = "http://35.92.46.108:8080/A1-Server_war";
+        // String baseUrl = "http://localhost:8080";
 
         String path = "/skiers/{resortID}/seasons/{seasonID}/days/{dayID}/skiers/{skierID}"
                 .replaceAll("\\{" + "resortID" + "}", apiClient.escapeString(resortID.toString()))

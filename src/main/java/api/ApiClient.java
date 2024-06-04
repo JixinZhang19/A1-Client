@@ -52,8 +52,7 @@ public class ApiClient implements Closeable {
             // 获取响应状态码
             int statusCode = response.getStatusLine().getStatusCode();
             if (statusCode != 201) {
-                System.err.println("Method failed: " + response.getStatusLine());
-                LOGGER.log(Level.SEVERE, "Method failed: " + response.getStatusLine());
+                LOGGER.log(Level.WARNING, "Method failed: " + response.getStatusLine());
             }
             // 获取响应实体
             HttpEntity entity = response.getEntity();
@@ -71,7 +70,7 @@ public class ApiClient implements Closeable {
                     response.close();
                 }
             } catch (IOException e) {
-                LOGGER.log(Level.SEVERE, "Error closing response: " + e.getMessage(), e);
+                LOGGER.log(Level.SEVERE, "Error closing HttpResponse: " + e.getMessage(), e);
             }
         }
     }
@@ -84,7 +83,7 @@ public class ApiClient implements Closeable {
                 httpClient.close();
             }
         } catch (IOException e) {
-            LOGGER.log(Level.SEVERE, "Error closing client: " + e.getMessage(), e);
+            LOGGER.log(Level.SEVERE, "Error closing HttpClient: " + e.getMessage(), e);
         }
     }
 
