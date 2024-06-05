@@ -2,6 +2,7 @@ package api;
 
 import com.google.gson.Gson;
 import org.apache.http.HttpEntity;
+import org.apache.http.HttpStatus;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.ContentType;
@@ -9,7 +10,6 @@ import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.DefaultHttpRequestRetryHandler;
 import org.apache.http.impl.client.HttpClientBuilder;
-import org.apache.http.util.EntityUtils;
 
 import java.io.Closeable;
 import java.io.IOException;
@@ -25,8 +25,11 @@ import java.util.logging.Logger;
 public class ApiClient implements Closeable {
 
     private static final Logger LOGGER = Logger.getLogger(ApiClient.class.getName());
-    private final static Gson gson = new Gson();
-    private final static DefaultHttpRequestRetryHandler retryHandler = new DefaultHttpRequestRetryHandler(5, true);
+
+    private static final Gson gson = new Gson();
+
+    private static final DefaultHttpRequestRetryHandler retryHandler = new DefaultHttpRequestRetryHandler(5, true);
+
     private final CloseableHttpClient httpClient;
 
     public ApiClient() {
@@ -38,33 +41,42 @@ public class ApiClient implements Closeable {
     }
 
     public int postRequest(String baseUrl, String path, Object body) {
-        // 创建 HTTP POST 请求
+        // Create post request
         String url = baseUrl + path;
         HttpPost httpPost = new HttpPost(url);
-        // 设置请求体
+        httpPost.setHeader("Content-Type", "application/json");
+
+        // Set request body
         String requestBody = gson.toJson(body);
         StringEntity requestEntity = new StringEntity(requestBody, ContentType.APPLICATION_JSON);
         httpPost.setEntity(requestEntity);
 
+        // Create post response
         CloseableHttpResponse response = null;
         try {
+            // Execute request and get response
             response = httpClient.execute(httpPost);
-            // 获取响应状态码
+
+            // Get status code
             int statusCode = response.getStatusLine().getStatusCode();
-            if (statusCode != 201) {
+            if (statusCode != HttpStatus.SC_CREATED) {
                 LOGGER.log(Level.WARNING, "Method failed: " + response.getStatusLine());
             }
-            // 获取响应实体
+
+            // Get response body
             HttpEntity entity = response.getEntity();
-            if (entity != null) {
-                // 从响应实体中获取响应内容
-                String responseBody = EntityUtils.toString(entity);
-            }
+//            if (entity != null) {
+//                String responseBody = EntityUtils.toString(entity);
+//            }
+
+            // Return status code
             return statusCode;
         } catch (IOException e) {
+            // If server throws IOException, meaning server error, return 500 (internal server error)
             LOGGER.log(Level.SEVERE, "Fatal transport error: " + e.getMessage(), e);
-            return 500;
+            return HttpStatus.SC_INTERNAL_SERVER_ERROR;
         } finally {
+            // Close HttpResponse
             try {
                 if (response != null) {
                     response.close();
@@ -77,7 +89,7 @@ public class ApiClient implements Closeable {
 
     @Override
     public void close() {
-        // System.out.println("close HttpClient");
+        // Close HttpClient
         try {
             if (httpClient != null) {
                 httpClient.close();

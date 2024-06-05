@@ -1,21 +1,25 @@
 import api.SkierApi;
 import model.LifeRide;
 
-import java.io.IOException;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * @author Rebecca Zhang
  * Created on 2024-06-01
  * <p>
- * 288435 ms
+ * 1000 requests: 34976 ms -> latency: 34.976 ms/req -> 32 / 34.976 = 950 req/s
+ * 200 requests: 7457 ms -> latency: 37.285 ms/req -> 500 / 37.285 = 13410
  */
 
-// todo: 太慢了，server启用的thread似乎很少，为什么？
+// todo: server启用的thread似乎很少？1/(time/req)？
+
 public class SingleClient {
 
     private static final AtomicInteger successCount = new AtomicInteger(0);
+
     private static final AtomicInteger failCount = new AtomicInteger(0);
+
+    private static final SkierApi skierApi = new SkierApi();
 
     public static void main(String[] args) throws InterruptedException {
 
@@ -27,9 +31,8 @@ public class SingleClient {
         Integer skierID = 19;
         LifeRide lifeRide = new LifeRide(111, 222);
 
-        SkierApi skierApi = new SkierApi();
         Thread thread = new Thread(() -> {
-            for (int i = 0; i < 10000; i++) {
+            for (int i = 0; i < 200; i++) {
                 int code = skierApi.writeNewLiftRideCall(lifeRide, resortID, seasonID, dayID, skierID);
                 if (code == 201) {
                     successCount.getAndIncrement();
@@ -40,16 +43,13 @@ public class SingleClient {
         });
 
         thread.start();
-        thread.join(); // 等待线程完成
-        try {
-            // remove thread local
-            skierApi.close();
-        } catch (IOException e) {
-            System.out.println("IOException : error closing ThreadLocal");
-        }
+        thread.join();
+        skierApi.close();
 
         long end = System.currentTimeMillis();
-        System.out.println("time(ms): " + (end - start) + " success req: " + successCount.get() + " fail req: " + failCount.get());
+        System.out.println("Number of successful requests: " + successCount.get());
+        System.out.println("Number of unsuccessful requests: " + failCount.get());
+        System.out.println("Total run time (milliseconds): " + (end - start));
     }
 
 

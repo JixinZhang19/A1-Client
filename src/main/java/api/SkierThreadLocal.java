@@ -18,11 +18,11 @@ public class SkierThreadLocal<T> extends ThreadLocal<T> {
 
     @Override
     public void remove() {
-        // System.out.println("remove ThreadLocal");
+        // Remove ThreadLocal once the thread completes its task
         T value = get();
         if (value instanceof AutoCloseable) {
             try {
-                ((AutoCloseable) value).close(); // 调用 AutoCloseable 类型对象的 close() 方法
+                ((AutoCloseable) value).close();
             } catch (Exception e) {
                 LOGGER.log(Level.SEVERE, "Error removing ThreadLocal: " + e.getMessage(), e);
             }
