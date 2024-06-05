@@ -36,9 +36,7 @@ public class MultiClientPartOne {
 
     private static final Logger LOGGER = Logger.getLogger(MultiClientPartOne.class.getName());
 
-    private static final ExecutorService executorFirst = Executors.newFixedThreadPool(32);
-
-    private static final ExecutorService executorSecond = Executors.newFixedThreadPool(840);
+    private static final ExecutorService executor = Executors.newCachedThreadPool();
 
     private static final BlockingQueue<SkierTask> queue = new LinkedBlockingQueue<>();
 
@@ -65,29 +63,32 @@ public class MultiClientPartOne {
 
         // Start 32 skier consumers
         for (int i = 0; i < THREADS_NUM_FIRST; i++) {
-            executorFirst.execute(new SkierConsumerPartOne(queue, startLatch, successCount, failCount, POST_REQ_EACH_THREAD_FIRST));
+            executor.execute(new SkierConsumerPartOne(queue, startLatch, successCount, failCount, POST_REQ_EACH_THREAD_FIRST));
         }
 
         // Wait until one skier consumer complete its task
         startLatch.await();
         int reqStage1 = successCount.get();
         long endStage1 = System.currentTimeMillis();
+        System.out.println("Multi-thread Client (Part One)");
+        System.out.println("-----------------------------------------------------");
+        System.out.println("Stage1 run time (milliseconds): " + (endStage1 - start));
         System.out.println("Stage1 throughput (requests/second): " + reqStage1 / ((endStage1 - start) / 1000));
         System.out.println("-----------------------------------------------------");
         // Start remaining skier consumers
         for (int i = 0; i < THREADS_NUM_SECOND; i++) {
-            executorSecond.execute(new SkierConsumerPartOne(queue, startLatch, successCount, failCount, POST_REQ_EACH_THREAD_SECOND));
+            executor.execute(new SkierConsumerPartOne(queue, startLatch, successCount, failCount, POST_REQ_EACH_THREAD_SECOND));
         }
 
-        executorFirst.shutdown();
-        executorSecond.shutdown();
+        executor.shutdown();
         // Wait for all tasks in the thread pool to complete executing or wait 2 minute
-        if (!executorFirst.awaitTermination(2, TimeUnit.MINUTES) || !executorSecond.awaitTermination(2, TimeUnit.MINUTES)) {
+        if (!executor.awaitTermination(2, TimeUnit.MINUTES)) {
             // Timeout
             LOGGER.log(Level.SEVERE, "Thread pool wait timeout");
         }
 
         long end = System.currentTimeMillis();
+        System.out.println("Stage2 run time (milliseconds): " + (end - endStage1));
         System.out.println("Stage2 throughput (requests/second): " + (200000 - reqStage1) / ((end - endStage1) / 1000));
         System.out.println("-----------------------------------------------------");
         System.out.println("Number of successful requests: " + successCount.get());

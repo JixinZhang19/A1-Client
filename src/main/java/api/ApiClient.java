@@ -10,6 +10,7 @@ import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.DefaultHttpRequestRetryHandler;
 import org.apache.http.impl.client.HttpClientBuilder;
+import org.apache.http.util.EntityUtils;
 
 import java.io.Closeable;
 import java.io.IOException;
@@ -65,10 +66,10 @@ public class ApiClient implements Closeable {
 
             // Get response body
             HttpEntity entity = response.getEntity();
-//            if (entity != null) {
-//                String responseBody = EntityUtils.toString(entity);
-//            }
-
+            if (entity != null) {
+                String responseBody = EntityUtils.toString(entity);
+                // System.out.println(responseBody);
+            }
             // Return status code
             return statusCode;
         } catch (IOException e) {

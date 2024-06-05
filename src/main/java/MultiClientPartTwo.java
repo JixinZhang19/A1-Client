@@ -63,6 +63,9 @@ public class MultiClientPartTwo {
         startLatch.await();
         int reqStage1 = successCount.get();
         long endStage1 = System.currentTimeMillis();
+        System.out.println("Multi-thread Client (Part One)");
+        System.out.println("-----------------------------------------------------");
+        System.out.println("Stage1 run time (milliseconds): " + (endStage1 - start));
         System.out.println("Stage1 throughput (requests/second): " + reqStage1 / ((endStage1 - start) / 1000));
         System.out.println("-----------------------------------------------------");
 
@@ -78,13 +81,6 @@ public class MultiClientPartTwo {
             LOGGER.log(Level.SEVERE, "Thread pool wait timeout");
         }
 
-        long end = System.currentTimeMillis();
-        System.out.println("Stage2 throughput (requests/second): " + (200000 - reqStage1) / ((end - endStage1) / 1000));
-        System.out.println("-----------------------------------------------------");
-        System.out.println("Number of successful requests: " + successCount.get());
-        System.out.println("Number of unsuccessful requests: " + failCount.get());
-        System.out.println("Total run time of completing 200K requests (milliseconds): " + (end - start));
-        System.out.println("Total throughput (requests/second): " + 200000 / ((end - start) / 1000));
 
 //        fileExecutor.shutdown();
 //        // Wait for all tasks in the thread pool to complete executing or wait 2 minute
@@ -93,14 +89,19 @@ public class MultiClientPartTwo {
 //            LOGGER.log(Level.SEVERE, "Thread pool (fileExecutor) wait timeout");
 //        }
 
-        // 再启动另一个线程，fileConsumer写入csv文件
+        // Start 1 file consumer
         Thread thread = new Thread(new FileConsumer(fileQueue));
         thread.start();
         thread.join();
 
-        long end2 = System.currentTimeMillis();
-        System.out.println("Total run time of completing writing file (milliseconds): " + (end2 - start));
-        System.out.println("Total throughput (requests/second): " + 200000 / ((end2 - start) / 1000));
+        long end = System.currentTimeMillis();
+        System.out.println("Stage2 run time (milliseconds): " + (end - endStage1));
+        System.out.println("Stage2 throughput (requests/second): " + (200000 - reqStage1) / ((end - endStage1) / 1000));
+        System.out.println("-----------------------------------------------------");
+        System.out.println("Number of successful requests: " + successCount.get());
+        System.out.println("Number of unsuccessful requests: " + failCount.get());
+        System.out.println("Total run time (milliseconds): " + (end - start));
+        System.out.println("Total throughput (requests/second): " + 200000 / ((end - start) / 1000));
     }
 
 }

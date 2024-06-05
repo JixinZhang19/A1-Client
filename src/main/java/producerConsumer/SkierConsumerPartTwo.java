@@ -77,11 +77,11 @@ public class SkierConsumerPartTwo implements Runnable {
 //                    fileQueue.offer(fileTask);
 //                }
 //            });
-            // Once a thread completes its task, release startLatch
-            startLatch.countDown();
         } catch (InterruptedException e) {
             LOGGER.log(Level.SEVERE, "Error taking task from skier queue: " + e.getMessage(), e);
         } finally {
+            // Once a thread completes its task, release startLatch
+            startLatch.countDown();
             // Remove ThreadLocal
             skierApi.close();
         }
