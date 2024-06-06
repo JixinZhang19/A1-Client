@@ -6,16 +6,12 @@ import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.concurrent.ConcurrentLinkedQueue;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * @author Rebecca Zhang
  * Created on 2024-06-04
  */
 public class FileConsumer implements Runnable {
-
-    private static final Logger LOGGER = Logger.getLogger(SkierConsumerPartOne.class.getName());
 
     private final ConcurrentLinkedQueue<FileTask> fileQueue;
 
@@ -38,7 +34,7 @@ public class FileConsumer implements Runnable {
                         fileTask.getResponseCode()));
             }
         } catch (IOException e) {
-            LOGGER.log(Level.SEVERE, "Error writing to file: " + e.getMessage(), e);
+            System.out.println("[SEVERE] Error writing to file: " + e.getMessage());
         }
     }
 }

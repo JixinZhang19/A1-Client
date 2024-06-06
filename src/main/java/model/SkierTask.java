@@ -6,17 +6,17 @@ package model;
  */
 public class SkierTask {
 
-    Integer resortID;
+    private Integer resortID;
 
-    String seasonID;
+    private String seasonID;
 
-    String dayID;
+    private String dayID;
 
-    Integer skierID;
+    private Integer skierID;
 
-    Integer time;
+    private Integer time;
 
-    Integer liftID;
+    private Integer liftID;
 
     public SkierTask(Integer resortID, String seasonID, String dayID, Integer skierID, Integer time, Integer liftID) {
         this.resortID = resortID;
@@ -50,4 +50,5 @@ public class SkierTask {
     public Integer getLiftID() {
         return liftID;
     }
+
 }

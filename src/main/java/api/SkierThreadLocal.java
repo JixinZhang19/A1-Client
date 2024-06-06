@@ -1,15 +1,10 @@
 package api;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 /**
  * @author Rebecca Zhang
  * Created on 2024-06-02
  */
 public class SkierThreadLocal<T> extends ThreadLocal<T> {
-
-    private static final Logger LOGGER = Logger.getLogger(SkierThreadLocal.class.getName());
 
     @Override
     protected T initialValue() {
@@ -24,7 +19,7 @@ public class SkierThreadLocal<T> extends ThreadLocal<T> {
             try {
                 ((AutoCloseable) value).close();
             } catch (Exception e) {
-                LOGGER.log(Level.SEVERE, "Error removing ThreadLocal: " + e.getMessage(), e);
+                System.out.println("[SEVERE] Error removing ThreadLocal: " + e.getMessage());
             }
         }
         super.remove();

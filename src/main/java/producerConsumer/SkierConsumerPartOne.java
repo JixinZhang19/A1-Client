@@ -7,16 +7,12 @@ import model.SkierTask;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * @author Rebecca Zhang
  * Created on 2024-06-02
  */
 public class SkierConsumerPartOne implements Runnable {
-
-    private static final Logger LOGGER = Logger.getLogger(SkierConsumerPartOne.class.getName());
 
     private final BlockingQueue<SkierTask> queue;
 
@@ -61,7 +57,7 @@ public class SkierConsumerPartOne implements Runnable {
                 }
             }
         } catch (InterruptedException e) {
-            LOGGER.log(Level.SEVERE, "Error taking task from skier queue: " + e.getMessage(), e);
+            System.out.println("[SEVERE] Error taking task from skier queue: " + e.getMessage());
         } finally {
             // Once a thread completes its task, release startLatch
             startLatch.countDown();

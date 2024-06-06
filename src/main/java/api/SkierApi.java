@@ -13,7 +13,7 @@ public class SkierApi implements Closeable {
     private static final SkierThreadLocal<ApiClient> apiClients = new SkierThreadLocal<>();
 
     // Change the baseUrl once IP changes
-    private static final String baseUrl = "http://34.211.96.209:8080/A1-Server_war";
+    private static final String baseUrl = "http://54.189.140.104:8080/A1-Server_war";
 
     public int writeNewLiftRideCall(LifeRide lifeRide, Integer resortID, String seasonID, String dayID, Integer skierID) {
 

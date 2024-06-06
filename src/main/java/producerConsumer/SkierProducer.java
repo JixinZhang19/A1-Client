@@ -2,10 +2,8 @@ package producerConsumer;
 
 import model.SkierTask;
 
+import java.util.Random;
 import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.ThreadLocalRandom;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * @author Rebecca Zhang
@@ -13,39 +11,40 @@ import java.util.logging.Logger;
  */
 public class SkierProducer implements Runnable {
 
-    private static final Logger LOGGER = Logger.getLogger(SkierProducer.class.getName());
-
     private final BlockingQueue<SkierTask> queue;
 
-    private static final int REQUEST_NUM = 200000;
+    private final int requestNum;
 
-    public SkierProducer(BlockingQueue<SkierTask> queue) {
+    private static final Random random = new Random();
+
+    public SkierProducer(BlockingQueue<SkierTask> queue, int requestNum) {
         this.queue = queue;
+        this.requestNum = requestNum;
     }
 
     @Override
     public void run() {
-        for (int i = 0; i < REQUEST_NUM; i++) {
+        for (int i = 0; i < requestNum; i++) {
             try {
                 queue.put(generateRandomTask());
             } catch (InterruptedException e) {
-                LOGGER.log(Level.SEVERE, "Error putting task into skier queue: " + e.getMessage(), e);
+                System.out.println("[SEVERE] Error putting task into skier queue: " + e.getMessage());
             }
         }
     }
 
     /**
-     * @Description Create random SkierTask with ThreadLocalRandom
      * @return SkierTask
+     * @Description Create random SkierTask with ThreadLocalRandom
      */
     public SkierTask generateRandomTask() {
         return new SkierTask(
-                ThreadLocalRandom.current().nextInt(10) + 1,
+                random.nextInt(10) + 1,
                 "2024",
                 "1",
-                ThreadLocalRandom.current().nextInt(100000) + 1,
-                ThreadLocalRandom.current().nextInt(360) + 1,
-                ThreadLocalRandom.current().nextInt(40) + 1
+                random.nextInt(100000) + 1,
+                random.nextInt(360) + 1,
+                random.nextInt(40) + 1
         );
     }
 

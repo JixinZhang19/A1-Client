@@ -16,16 +16,12 @@ import java.io.Closeable;
 import java.io.IOException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * @author Rebecca Zhang
  * Created on 2024-06-01
  */
 public class ApiClient implements Closeable {
-
-    private static final Logger LOGGER = Logger.getLogger(ApiClient.class.getName());
 
     private static final Gson gson = new Gson();
 
@@ -61,7 +57,7 @@ public class ApiClient implements Closeable {
             // Get status code
             int statusCode = response.getStatusLine().getStatusCode();
             if (statusCode != HttpStatus.SC_CREATED) {
-                LOGGER.log(Level.WARNING, "Method failed: " + response.getStatusLine());
+                System.out.println("[WARNING] Request failed: " + response.getStatusLine());
             }
 
             // Get response body
@@ -74,7 +70,7 @@ public class ApiClient implements Closeable {
             return statusCode;
         } catch (IOException e) {
             // If server throws IOException, meaning server error, return 500 (internal server error)
-            LOGGER.log(Level.SEVERE, "Fatal transport error: " + e.getMessage(), e);
+            System.out.println("[SEVERE] Fatal transport error: " + e.getMessage());
             return HttpStatus.SC_INTERNAL_SERVER_ERROR;
         } finally {
             // Close HttpResponse
@@ -83,7 +79,7 @@ public class ApiClient implements Closeable {
                     response.close();
                 }
             } catch (IOException e) {
-                LOGGER.log(Level.SEVERE, "Error closing HttpResponse: " + e.getMessage(), e);
+                System.out.println("[SEVERE] Error closing HttpResponse: " + e.getMessage());
             }
         }
     }
@@ -96,7 +92,7 @@ public class ApiClient implements Closeable {
                 httpClient.close();
             }
         } catch (IOException e) {
-            LOGGER.log(Level.SEVERE, "Error closing HttpClient: " + e.getMessage(), e);
+            System.out.println("[SEVERE] Error closing HttpClient: " + e.getMessage());
         }
     }
 
