@@ -22,9 +22,9 @@ public class FileConsumer implements Runnable {
     @Override
     public void run() {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter("output.csv"))) {
-            // 写入 CSV 文件的标题行
+            // Write the header line of the CSV file
             writer.write("StartTime,RequestType,Latency(ms),ResponseCode\n");
-            // 从队列中逐个取出 FileTask，并写入 CSV 文件
+            // Poll FileTask from file queue and write it to the CSV file
             FileTask fileTask;
             for(fileTask = fileQueue.poll(); fileTask != null; fileTask = fileQueue.poll()) {
                 writer.write(String.format("%d,%s,%d,%d\n",

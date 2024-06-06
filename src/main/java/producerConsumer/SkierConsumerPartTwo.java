@@ -42,7 +42,6 @@ public class SkierConsumerPartTwo implements Runnable {
     @Override
     public void run() {
         try {
-            // List<FileTask> fileTaskList = new ArrayList<>();
             for (int k = 0; k < POST_REQ_EACH_THREAD; k++) {
                 // Take task from skier queue
                 SkierTask task = queue.take();
@@ -57,7 +56,7 @@ public class SkierConsumerPartTwo implements Runnable {
                 int code = skierApi.writeNewLiftRideCall(lifeRide, resortID, seasonID, dayID, skierID);
                 long end = System.currentTimeMillis();
 
-                // fileTaskList.add(new FileTask(start, "POST", end - start, code));
+                // Add file task to file queue
                 fileQueue.offer(new FileTask(start, "POST", end - start, code));
 
                 // Check if request successes
@@ -68,11 +67,6 @@ public class SkierConsumerPartTwo implements Runnable {
                 }
             }
 
-//            fileExecutor.execute(() -> {
-//                for (FileTask fileTask: fileTaskList) {
-//                    fileQueue.offer(fileTask);
-//                }
-//            });
         } catch (InterruptedException e) {
             System.out.println("[SEVERE] Error taking task from skier queue: " + e.getMessage());
         } finally {
