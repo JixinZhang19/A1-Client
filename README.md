@@ -1,2 +1,3 @@
-# A1-Concurrency-and-Client-server
-Assignment1
+# A1-Client
+
+Change IP address in src/main/java/api.SkierApi
