@@ -14,7 +14,7 @@ public class SkierApi implements Closeable {
 
     // Change the baseUrl once IP changes
     // For Tomcat Servlet Application
-    private static final String baseUrl = "http://35.95.19.27:8080/A1-Server_war";
+    private static final String baseUrl = "http://localhost:8080/";
     // For SpringBoot Application
     // private static final String baseUrl = "http://35.95.19.27:8090/";
 

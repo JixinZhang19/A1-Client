@@ -25,13 +25,14 @@ public class MultiClientPartOne {
 
     private static final int NUM_REQUEST = 200000;
 
-    private static final int POST_REQ_EACH_THREAD_FIRST = 1000;
+    // todo: tuning thread number
+    private static final int POST_REQ_EACH_THREAD_FIRST = 300;
 
-    private static final int THREADS_NUM_FIRST = 32;
+    private static final int THREADS_NUM_FIRST = 500;
 
-    private static final int POST_REQ_EACH_THREAD_SECOND = 336;
+    private static final int POST_REQ_EACH_THREAD_SECOND = 500;
 
-    private static final int THREADS_NUM_SECOND = 500;
+    private static final int THREADS_NUM_SECOND = 100;
 
     public static void main(String[] args) throws InterruptedException {
 
