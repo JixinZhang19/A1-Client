@@ -25,7 +25,6 @@ public class MultiClientPartOne {
 
     private static final int NUM_REQUEST = 200000;
 
-    // todo: tuning thread number
     private static final int POST_REQ_EACH_THREAD_FIRST = 320;
 
     private static final int THREADS_NUM_FIRST = 100;
