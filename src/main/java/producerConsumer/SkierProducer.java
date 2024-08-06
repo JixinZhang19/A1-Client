@@ -39,9 +39,9 @@ public class SkierProducer implements Runnable {
      */
     public SkierTask generateRandomTask() {
         return new SkierTask(
-                random.nextInt(10) + 1,
+                1,
                 "2024",
-                "1",
+                String.valueOf(random.nextInt(3) + 1),
                 random.nextInt(100000) + 1,
                 random.nextInt(360) + 1,
                 random.nextInt(40) + 1
